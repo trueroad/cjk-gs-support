@@ -616,6 +616,11 @@ sub do_all_fonts {
       for my $enc (@{$encode_list{$class}}) {
         unlink "$fontdest/$k-$enc" if (-f "$fontdest/$k-$enc");
       }
+      if ($class eq "AI0") {
+        for my $cmap (@{$fontdb{$k}{'cmaps'}}) {
+          unlink "$fontdest/$k-$cmap" if (-f "$fontdest/$k-$cmap");
+        }
+      }
     }
     #
     # remove links; borrow link_font operation here for convenience
@@ -916,7 +921,13 @@ sub generate_font_snippet {
     add_akotfps_data($n);
     return;
   }
-  for my $enc (@{$encode_list{$c}}) {
+  my $el;
+  if ($c eq "AI0") {
+    $el = \@{$fontdb{$n}{'cmaps'}};
+  } else {
+    $el = \@{$encode_list{$c}};
+  }
+  for my $enc (@$el) {
     if ($opt_remove) {
       unlink "$fd/$n-$enc" if (-f "$fd/$n-$enc");
       next;
