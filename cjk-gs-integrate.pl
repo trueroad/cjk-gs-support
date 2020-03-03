@@ -1635,6 +1635,7 @@ sub read_each_font_database {
   my (@curdbl) = @_;
   my $fontname = "";
   my $fontclass = "";
+  my @fontcmaps = ();
   my %fontprovides = ();
   my $fontdoublecheck = "";
   my %fontfiles;
@@ -1658,6 +1659,7 @@ sub read_each_font_database {
           $fontdb{$realfontname}{'origname'} = $fontname;
           $fontdb{$realfontname}{'class'} = $fontclass;
           $fontdb{$realfontname}{'doublecheck'} = $fontdoublecheck;
+          $fontdb{$realfontname}{'cmaps'} = [ @fontcmaps ];
           $fontdb{$realfontname}{'files'} = { %fontfiles };
           $fontdb{$realfontname}{'provides'} = { %fontprovides };
           if ($opt_debug >= 3) {
@@ -1666,6 +1668,7 @@ sub read_each_font_database {
           # reset to start
           $fontname = $fontclass = $psname = "";
           $fontdoublecheck = "";
+          @fontcmaps = ();
           %fontfiles = ();
           %fontprovides = ();
         } else {
@@ -1673,6 +1676,7 @@ sub read_each_font_database {
           # reset to start
           $fontname = $fontclass = $psname = "";
           $fontdoublecheck = "";
+          @fontcmaps = ();
           %fontfiles = ();
           %fontprovides = ();
         }
@@ -1711,6 +1715,7 @@ sub read_each_font_database {
     if ($l =~ m/^Name:\s*(.*)$/) { $fontname = $1; next; }
     if ($l =~ m/^PSName:\s*(.*)$/) { $psname = $1; next; }
     if ($l =~ m/^Class:\s*(.*)$/) { $fontclass = $1 ; next ; }
+    if ($l =~ m/^CMap:\s*(.*)$/) { push(@fontcmaps, $1); next ; }
     if ($l =~ m/^Provides\((\d+)\):\s*(.*)$/) { $fontprovides{$2} = $1; next; }
     if ($l =~ m/^Doublecheck:\s*(.*)$/) { $fontdoublecheck = $1 ; next ; }
     if ($l =~ m/^Casefold:\s*(.*)$/) { $fontdoublecheck = $1 ; next ; } # no longer used
@@ -1823,6 +1828,9 @@ sub dump_font_database {
     print FOO "Name: $fontdb{$k}{'origname'}\n";
     print FOO "PSName: $k\n" if ($fontdb{$k}{'origname'} ne $k);
     print FOO "Class: $fontdb{$k}{'class'}\n";
+    for my $c (@{$fontdb{$k}{'cmaps'}}) {
+      print FOO "CMap: $c\n";
+    }
     for my $p (sort keys %{$fontdb{$k}{'provides'}}) {
       print FOO "Provides($fontdb{$k}{'provides'}{$p}): $p\n";
     }
