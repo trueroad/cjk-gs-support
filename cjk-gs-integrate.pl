@@ -254,6 +254,8 @@ my %encode_list = (
     UniKS-UTF32-V
     UniKS-UTF8-H
     UniKS-UTF8-V
+    / ],
+  AI0 => [ qw/
     / ] );
 
 #
