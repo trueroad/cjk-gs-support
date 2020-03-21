@@ -1677,7 +1677,7 @@ sub read_font_database {
   # use "foo" as a substitute; otherwise, use built-in database
   if ($opt_fontdef) {
     my $foo = kpse_miscfont($opt_fontdef);
-    open(FDB, "<$foo") ||
+    open(FDB, "<:encoding(UTF-8)", $foo) ||
       die("Cannot find $opt_fontdef: $!");
     @dbl = <FDB>;
     close(FDB);
@@ -1691,7 +1691,7 @@ sub read_font_database {
   # overwrite existing one (that is, the addition wins)
   for (@opt_fontdef_add) {
     my $foo = kpse_miscfont($_);
-    open(FDB, "<$foo") ||
+    open(FDB, "<:encoding(UTF-8)", $foo) ||
       die("Cannot find $_: $!");
     @dbl = <FDB>;
     close(FDB);
@@ -1762,7 +1762,7 @@ sub read_each_font_database {
       next if (!$opt_cleanup);
       my @dbl;
       my $foo = kpse_miscfont($1);
-      if (!open(FDB, "<$foo")) {
+      if (!open(FDB, "<:encoding(UTF-8)", $foo)) {
         print_warning("Cannot find $1, skipping!\n");
         next;
       }
@@ -1775,7 +1775,7 @@ sub read_each_font_database {
     if ($l =~ m/^INCLUDE\s*(.*)$/) {
       my @dbl;
       my $foo = kpse_miscfont($1);
-      if (!open(FDB, "<$foo")) {
+      if (!open(FDB, "<:encoding(UTF-8)", $foo)) {
         print_warning("Cannot find $1, skipping!\n");
         next;
       }
